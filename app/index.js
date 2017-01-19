@@ -240,6 +240,15 @@ module.exports = generators.Base.extend({
       );
     },
 
+    babelrc: function() {
+      if (this.includeReact) {
+        this.fs.copyTpl(
+          this.templatePath('babelrc'),
+          this.destinationPath('.babelrc')
+        );
+      }
+    },
+
     scripts: function() {
       // AngularJS
       if (this.includeAngular) {
@@ -295,6 +304,10 @@ module.exports = generators.Base.extend({
         this.fs.copyTpl(
           this.templatePath('scripts/react/components/App.jsx'),
           this.destinationPath('app/js/components/App.jsx')
+        );
+        this.fs.copyTpl(
+          this.templatePath('scripts/react/test'),
+          this.destinationPath('app/test')
         );
 
         if (this.includeRedux) {
