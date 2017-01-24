@@ -35,6 +35,7 @@ var plugins = [];
 const nodeModules = {};
 
 let outputFile = `.bundle`;
+let vendorOutputFile;
 let outputPath;
 
 var configJson;
@@ -78,7 +79,8 @@ if (env === 'production') {
 	    }
 	  }));
 	  plugins.push(new DedupePlugin());
-	  outputFile = `${outputFile}.min.js`;
+	  outputFile = `${outputFile}.min.[chunkhash].js`;
+	  vendorOutputFile = "vendor.bundle.[chunkhash].js";
 	  outputPath = `${__dirname}/dist/`;
 	  plugins.push(new WebpackOnBuildPlugin(function(stats){
       //create zip file
@@ -103,11 +105,13 @@ if (env === 'production') {
 
 } else if (env === 'deploy') {
 	  outputFile = `${outputFile}.js`;
+	  vendorOutputFile = "vendor.bundle.js";
 	  outputPath = `${config.LOCAL_OWA_FOLDER}${THIS_APP_ID}`;
 	  devtool = 'source-map';
 
 } else if (env === 'dev') {
 	  outputFile = `${outputFile}.js`;
+	  vendorOutputFile = "vendor.bundle.js";
 	  outputPath = `${__dirname}/dist/`;
 	  devtool = 'source-map';
 }
@@ -118,7 +122,7 @@ plugins.push(new BrowserSyncPlugin({
     }
 }));
 
-plugins.push(new CommonsChunkPlugin("vendor", "vendor.bundle.js"));
+plugins.push(new CommonsChunkPlugin("vendor", vendorOutputFile));
 
 plugins.push(new HtmlWebpackPlugin({
     template: './app/index.html',
